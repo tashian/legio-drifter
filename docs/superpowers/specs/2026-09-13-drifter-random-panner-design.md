@@ -126,12 +126,14 @@ every block, changing the rate takes effect immediately even mid-cycle (with a
   box spanned by the endpoints, so the curve **never overshoots** and never
   leaves the cycle window (convex-hull property, as the manual notes).
 
-**Evaluation.** The curve is a parametric cubic Bézier in (time, value). For the
-CW family `x(s)` is not the identity, so at each block we solve `x(s) = φ` for
-`s` with 2–3 Newton iterations warm-started from the previous `s` (φ is
-monotonic, so `s` is monotonic and the warm start converges immediately), then
-output `y(s)`. This gives the true cusps and plateaus rather than an easing
-approximation. For `curve = 0` the solve is skipped (`s = φ`).
+**Evaluation.** The curve is a parametric cubic Bézier in (time, value). For
+both non-zero curve families `x(s)` is not the identity (CCW gives
+`x(s) = 3s² − 2s³`, CW gives `x(s) = 3(1−s)²s·k + 3(1−s)s²(1−k) + s³`), so at
+each block we solve `x(s) = φ` for `s` with 2–3 Newton iterations
+warm-started from the previous `s` (φ is monotonic, so `s` is monotonic and
+the warm start converges immediately), then output `y(s)`. This gives the
+true cusps and plateaus rather than an easing approximation. For `curve = 0`
+the solve is skipped (`s = φ`).
 
 **Rate.**
 
@@ -396,3 +398,7 @@ Host tests passing is not "done". Step 5 is the last gate.
 - Freeze, persistence, a desktop plugin. All could come later without changing
   the DSP/HAL split.
 - Audio-rate crossfading of CV through the audio inputs (impossible: AC coupled).
+
+*Correction 2026-09-13 (implementation): the Evaluation note originally said only the CW
+family needs the solve; the CCW family's x(s) is also non-identity. The code solves for
+every non-zero curve and evaluates the straight line directly at curve = 0.*

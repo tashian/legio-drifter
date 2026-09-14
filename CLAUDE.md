@@ -45,6 +45,7 @@ need a reseat before `/dev/cu.usbmodem*` reappears.
 Live serial: `screen /dev/cu.usbmodem* 115200`. If `screen` is attached elsewhere, `cat`
 can't open the port — check `screen -ls`. Telemetry at 5 Hz:
 `mode=PAN pos=0.42 ctr=0.50 dep=0.30 T=12.0s ext=0 curve=+0.35 edge=FOLD cv_norm=0.3021 cv=0.000V src=jack`
+(appends ` [curve edit]` while curve-edit mode is active)
 
 ## Hardware quirks (workspace lessons — see ../CLAUDE.md for the full list)
 
@@ -63,10 +64,19 @@ can't open the port — check `screen -ls`. Telemetry at 5 Hz:
 - Encoder: tap (< 400 ms) toggles curve-edit mode; long press (≥ 800 ms, fires at 800 ms)
   toggles the internal +5 V source in CV mode only; 400–800 ms is dead; rotation while
   pressed is ignored.
-- Bypass mode = encoder held during boot. Pure passthrough, both LEDs dim white.
+- Bypass mode = encoder held during boot. Pure passthrough, both LEDs dim white. **The boot
+  check must poll `ProcessAllControls()` ~12× with 1 ms delays before reading
+  `encoder.Pressed()`**: libDaisy's `Switch::Debounce()` shifts one bit per ≥1 ms call and
+  `Pressed()` needs eight consecutive 1s, so a single poll can never read pressed.
+  (stutterer's `main.cpp` still has the single-poll idiom; its bypass is dead.)
+- Clock accepts periods from 0.05 s to **20 s** (stutterer's copy caps at 5 s); while
+  acquiring, a lone first edge is kept for up to 20 s so slow ambient clocks can lock; once
+  locked, free-run resumes after max(4 periods, 2 s) of silence.
+- Telemetry appends ` [curve edit]` while curve-edit mode is active.
 - LEDs: blue = computed position (left = 1 − pos, right = pos); yellow flash on the left
   = new random target; yellow flash on the right = incoming clock edge; curve-edit mode
-  shows curve in yellow only; internal CV source adds a dim yellow floor.
+  shows curve in yellow only; internal CV source adds a yellow floor that scales with the
+  blue under it (max(0.3, 0.6·blue)), so the pair reads pale instead of pure blue.
 
 ## CV-mode calibration
 
@@ -87,4 +97,7 @@ Constants in `src/cv_in.h` were reused from sawstack (same Patch SM, measured 20
 
 ## Open / known issues
 
-- (none yet)
+- Flash is ~83% of 128 KB (≈106 KB text) after the full chain; there is not much room for
+  new features.
+- Link-time newlib-nano warnings (`_close`, `_fstat`, … not implemented; `LOAD segment with
+  RWX permissions`) are pre-existing toolchain noise, not a firmware problem.
