@@ -161,16 +161,16 @@ the CV-mode source).
 |---|---|
 | Top knob + CV jack | `center`. Full CCW = left / A, full CW = right / B. |
 | Bottom knob + CV jack | `depth`. Zero = plain CV panner. Full = wander covers the whole field. |
-| Encoder rotate | Rate. Free-running: log period, 5 min → 20 Hz. Clocked: ratio ÷8 … ×8. |
-| Encoder push + rotate | `curve`, −1 … +1 in 24 steps. CCW = cusped, noon = linear, CW = eased/plateau. Pushing the encoder without rotating does nothing. |
+| Encoder rotate (normal) | Rate. Free-running: log period, 5 min → 20 Hz. Clocked: ratio ÷8 … ×8. |
+| Encoder tap | Toggles **curve edit mode**. In edit mode the LEDs turn yellow and show `curve`, and rotating edits `curve` (−1 … +1 in 24 steps: CCW = cusped, noon = linear, CW = eased/plateau). A second tap returns to normal: rotate edits rate, LEDs show position. A tap is a press-and-release under 400 ms; rotation while pressed is ignored. |
 | Encoder held at boot | Bypass: pure passthrough, both LEDs dim white. Workspace convention for isolating "is the audio path alive". |
 | Left switch | Mode: PAN (up) / XFADE (center) / CV (down). |
 | Right switch | Edge behavior: CLIP (up) / FOLD (center) / WRAP (down). |
 | Gate in | Clock for the random generator. Unpatched = free-running. |
 | V/oct jack | CV-mode source. Unused in PAN and XFADE. |
 
-Reserved for later, not in this spec: encoder tap (candidate: freeze the wander
-in place), long press, rate CV, persistence across power cycles.
+Reserved for later, not in this spec: encoder long press (candidate: freeze the
+wander in place), rate CV, persistence across power cycles.
 
 ## LEDs
 
@@ -186,9 +186,12 @@ The blue pair therefore always shows the **computed** position — the sum of
 knob, CV, wander, edge behavior and smoothing — which is what you hear. It is
 not the knob position; with depth at zero the two coincide.
 
-While the encoder is **held** (curve editing), both LEDs switch to showing
-`curve` in yellow: left bright = CCW/cusped, right bright = CW/eased, equal =
-linear. Released, they return to position display.
+In **curve edit mode** (entered and left with an encoder tap), both LEDs drop
+the blue position display and show `curve` in yellow: left bright = CCW/cusped,
+right bright = CW/eased, equal = linear. The new-target and clock flashes are
+suppressed while editing so the yellow reading is unambiguous. The wander keeps
+running underneath; only the display and the encoder's target change. Tapping
+again returns to the position display.
 
 ## CV-mode calibration
 
@@ -239,7 +242,9 @@ Makefile              Classic layout; keeps -u _printf_float.
 Data flow per block (in the audio callback):
 
 1. `main.cpp` snapshots controls into `Params` (knobs, switch positions with
-   panel polarity fixed, encoder increment and pressed state, gate edge, cv norm).
+   panel polarity fixed, encoder increment, encoder tap edge, gate edge, cv
+   norm). The curve-edit toggle state lives in the chain, not the HAL, so the
+   host tests cover it.
 2. `clock.update(gate_edge, n)`.
 3. `chain.ApplyParams(p, clock)`: derives period (free or clocked), forwards
    curve/rate edits, computes `center`/`depth`, steps the generator once,
@@ -272,7 +277,9 @@ where sample-counting matters (workspace memory: never 1000 Hz-style values).
   the complement of Out L; CV law sums to 1.0 for any pos; CV mode ignores
   audio inputs.
 - **clock:** copied from stutterer.
-- **chain:** depth 0 → pos == center; fold keeps pos in [0, 1] for any center
+- **chain:** an encoder tap toggles edit mode; encoder increments go to rate
+  in normal mode and to curve in edit mode, never both; depth 0 → pos ==
+  center; fold keeps pos in [0, 1] for any center
   and depth; the smoothed position never jumps more than a bound per sample
   (no zipper); switching mode mid-block produces no NaN and bounded output.
 
