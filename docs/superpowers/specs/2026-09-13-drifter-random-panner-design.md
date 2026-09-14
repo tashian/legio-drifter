@@ -11,7 +11,9 @@ with a **random Bézier wander** (in the style of hardware random-Bézier CV gen
 generative ambient patches: the image drifts on its own, CV and knob set where it
 drifts around, and an optional external clock makes it resettle in time with the
 patch. A third mode turns the module into a **CV panner**: an envelope in, two
-complementary DC envelopes out, for sharing "presence" between two voices.
+complementary DC envelopes out, for sharing "presence" between two voices. With
+no envelope patched, the same mode becomes a **generative CV source**: the
+wander itself comes out as a complementary pair of slow random voltages.
 
 Everything is a utility, not an instrument. It should be usable with no manual:
 one switch picks what the module is, the top knob is "where", the bottom knob is
@@ -32,7 +34,12 @@ workspace-level `CLAUDE.md`:
 - **3 ADC channels.** `CONTROL_KNOB_TOP` and `CONTROL_KNOB_BOTTOM` each read the
   analog sum of the knob and the CV jack above it — inseparable, treated as a
   feature. `CONTROL_PITCH` (the v/oct jack) is a separate, DC-coupled CV input.
-  A floating v/oct jack reads an indeterminate non-zero value.
+  Sawstack calibrated this ADC on this same Patch SM (2026-05-10): 0 V reads
+  0.3019, +1 V reads 0.4321, linear to within ~1 LSB at −2 V. What an
+  **unpatched** v/oct jack reads has never been measured in this workspace;
+  the older "indeterminate non-zero" notes predate calibration and most likely
+  describe the 0 V offset itself (raw ≈ 0.30, not 0.0). Measured at the first
+  flash gate, see "CV-mode calibration".
 - **Digital:** 1 gate input, 1 push encoder, 2 three-position switches
   (`Switch3.Read()` polarity is inverted vs. the panel — invert in `main.cpp`
   as the other apps do), 2 RGB LEDs.
@@ -46,7 +53,7 @@ workspace-level `CLAUDE.md`:
 |---|---|---|
 | Up | **PAN** | Out L = In L · gL, Out R = In R · gR. With only In L patched (hardware normalling) this is a mono→stereo panner. With a stereo pair patched it is a stereo balance control: hard left mutes Out R, hard right mutes Out L, and each output only ever carries its own input. |
 | Center | **XFADE** | A = In L, B = In R. Out L = A · gA + B · gB (the crossfade). Out R = A · gB + B · gA (the complementary crossfade). Taking only Out L gives a plain A/B crossfader; Out R is the swapped mix for free. |
-| Down | **CV** | Source = the v/oct jack, read as calibrated volts. Out L = source · (1 − pos), Out R = source · pos, as DC voltage on the DC-coupled outputs. Audio inputs are ignored. |
+| Down | **CV** | Source = the v/oct jack, read as calibrated volts, with a small deadband around 0 V so an unpatched jack gives clean silence; or an internal +5 V constant (see "Generative CV"). Out L = source · (1 − pos), Out R = source · pos, as DC voltage on the DC-coupled outputs. Audio inputs are ignored. |
 
 Gains in PAN and XFADE use the **equal-power law**: `gL = cos(pos·π/2)`,
 `gR = sin(pos·π/2)`. Center is −3 dB per side, no perceived dip.
@@ -163,14 +170,15 @@ the CV-mode source).
 | Bottom knob + CV jack | `depth`. Zero = plain CV panner. Full = wander covers the whole field. |
 | Encoder rotate (normal) | Rate. Free-running: log period, 5 min → 20 Hz. Clocked: ratio ÷8 … ×8. |
 | Encoder tap | Toggles **curve edit mode**. In edit mode the LEDs turn yellow and show `curve`, and rotating edits `curve` (−1 … +1 in 24 steps: CCW = cusped, noon = linear, CW = eased/plateau). A second tap returns to normal: rotate edits rate, LEDs show position. A tap is a press-and-release under 400 ms; rotation while pressed is ignored. |
+| Encoder long press (≥ 800 ms) | CV mode only: toggles the internal +5 V source (generative CV). No effect in PAN / XFADE. |
 | Encoder held at boot | Bypass: pure passthrough, both LEDs dim white. Workspace convention for isolating "is the audio path alive". |
 | Left switch | Mode: PAN (up) / XFADE (center) / CV (down). |
 | Right switch | Edge behavior: CLIP (up) / FOLD (center) / WRAP (down). |
 | Gate in | Clock for the random generator. Unpatched = free-running. |
 | V/oct jack | CV-mode source. Unused in PAN and XFADE. |
 
-Reserved for later, not in this spec: encoder long press (candidate: freeze the
-wander in place), rate CV, persistence across power cycles.
+Reserved for later, not in this spec: rate CV, freeze, persistence across
+power cycles.
 
 ## LEDs
 
@@ -195,23 +203,93 @@ again returns to the position display.
 
 ## CV-mode calibration
 
-The v/oct jack ADC needs the workspace's standard calibration before CV mode
-can ship (workspace lesson 4). Constants `kCvZero` / `kCvScale` in
-`src/cv_in.h`:
+The v/oct jack ADC needs the workspace's standard linear calibration
+(workspace lesson 4). Constants live in `src/cv_in.h`:
 
 ```
-volts = (norm - kCvZero) * kCvScale
+kCvZero     = 0.3019f   // raw ADC at 0 V   (sawstack, this Patch SM, 2026-05-10)
+kCvScale    = 7.6805f   // volts per raw unit = 1 / (0.4321 − 0.3019)
+kCvDeadband = 0.05f     // volts; |volts| below this reads as exactly 0
+
+volts  = (norm − kCvZero) · kCvScale
+volts  = 0 if |volts| < kCvDeadband
+source = volts / 5      // 1.0 float = +5 V at the DC-coupled output
 ```
 
-Procedure at the first flash gate: patch a known 0 V and a known +5 V (or +1 V)
-into the v/oct jack, read `cv_norm` from the serial telemetry, solve the two
-constants, rebuild. Output scaling: 1.0 float = +5 V at the DC-coupled output
-(Patch SM datasheet range), so `source = volts / 5`. **Until calibrated,
-`kCvScale = 0` and CV mode outputs silence** — the firmware is fully usable in
-PAN and XFADE from the first flash.
+The starting constants are **reused from sawstack**, which measured the same
+ADC channel on the same module, so CV mode is live from the first flash rather
+than gated behind a measurement. `kCvScale = 0` still disables the path
+entirely (source = 0) if the numbers turn out not to transfer.
+
+The deadband is a hard gate, not a subtraction: a value just above the
+threshold passes unchanged. The step at the threshold is 50 mV of CV, which the
+2 ms output smoother and any downstream filter cutoff render inaudible. The
+threshold is chosen to sit well above floating-input noise and well below any
+useful envelope; it is not a "noise floor" to tune by ear.
+
+Procedure at the first flash gate, with serial telemetry open:
+
+1. **Nothing patched.** Record `cv_norm` and how much it wanders over ~10 s.
+   Write both numbers into `CLAUDE.md`. This is the first measurement of the
+   floating input anyone in this workspace has taken; it decides two things:
+   whether the deadband actually covers it, and whether an unpatched jack is
+   distinguishable from a patched 0 V (see "Generative CV" below).
+2. **0 V patched** (a dummy cable from a quiet output, or a DC source at 0).
+   Confirm `cv_norm ≈ 0.3019`. If it differs by more than ~0.005, replace
+   `kCvZero`.
+3. **+1 V or +5 V patched.** Confirm `volts` in telemetry reads the source to
+   within ~1 %. If not, recompute `kCvScale = ΔV / Δnorm` and rebuild.
+4. Only if steps 2–3 changed a constant: rebuild, reflash, repeat 1–3.
 
 The source is sampled once per block (1 kHz) and smoothed with a ~2 ms one-pole
 before the gains are applied. Adequate for envelopes and LFOs; not an audio path.
+
+## Generative CV (CV mode with the internal source)
+
+In CV mode the source can be the v/oct jack **or an internal +5 V constant**.
+With the internal source the outputs are the position itself, as voltage:
+
+```
+Out L = 5 V · (1 − pos_s)
+Out R = 5 V · pos_s
+```
+
+Everything that shapes the position shapes these voltages: center is the
+offset, depth is the amplitude, the edge switch folds or wraps them, the
+encoder sets rate and curve, and a clock resettles them on the beat. This is a
+single random-Bézier channel plus its inverted output, 0 … +5 V unipolar, and the
+same pair of outputs that in PAN mode carries audio. Patch them into two filter
+cutoffs, two VCA CVs, or a cutoff and a wavefolder, and the two voices breathe
+against each other.
+
+The v/oct jack is ignored entirely while the internal source is active (no
+deadband decision is involved).
+
+**Selection.** Legio has no jack detection, and the unpatched v/oct reading has
+never been measured (see "CV-mode calibration", step 1). So the spec fixes an
+explicit selection that works regardless, and names the upgrade path:
+
+- **Encoder long press (≥ 800 ms) toggles the internal source, in CV mode
+  only.** In PAN and XFADE a long press does nothing. The setting is
+  remembered in RAM while the mode switch is elsewhere. Press timing: a
+  release before 400 ms is a tap (curve edit), a hold past 800 ms fires the
+  toggle once at the 800 ms mark without waiting for release, and the
+  400–800 ms window is dead so a slow tap can't toggle by accident.
+- **Automatic upgrade, decided at the flash gate.** If the unpatched jack
+  reads a raw value a patched cable cannot produce (outside the ±5 V span, or
+  with a distinctive high-variance signature that a driven 0 V does not
+  show), then the internal source is selected automatically whenever that
+  signature is present for > 1 s, and deselected within one block when a real
+  voltage appears. The long press is then freed. If the unpatched jack simply
+  reads ≈ 0 V, as the calibration notes suggest it will, detection is not
+  possible and the long press stays. Either way the DSP takes a single
+  `internal_source` bool; only where it comes from changes.
+
+**LED.** While the internal source is active both LEDs carry a **dim steady
+yellow floor** under the usual blue position display (hue paired with a
+brightness change, per the colorblind rule). New-target and clock flashes
+still appear on top. Leaving CV mode, or toggling the source off, removes the
+floor.
 
 ## Architecture
 
@@ -230,11 +308,11 @@ src/
   clock.{h,cpp}       Copied from stutterer (edge detect, period, fallback).
   edge.h              clip / fold / wrap pure functions.
   panner.{h,cpp}      Mode + smoothed position -> per-sample gains and output mixing for PAN / XFADE / CV.
-  cv_in.h             kCvZero / kCvScale and the norm->volts conversion.
+  cv_in.h             kCvZero / kCvScale / kCvDeadband and the norm->volts->source conversion.
   drifter_chain.{h,cpp}  Orchestrator: ApplyParams(Params, clock), ProcessBlock(inL, inR, cv, outL, outR, n).
 test/
   test_assert.h       Copied micro-harness.
-  test_bezier_random.cpp, test_edge.cpp, test_panner.cpp, test_clock.cpp, test_chain.cpp
+  test_bezier_random.cpp, test_edge.cpp, test_panner.cpp, test_cv_in.cpp, test_clock.cpp, test_chain.cpp
 lib/libDaisy          Submodule.
 Makefile              Classic layout; keeps -u _printf_float.
 ```
@@ -242,9 +320,11 @@ Makefile              Classic layout; keeps -u _printf_float.
 Data flow per block (in the audio callback):
 
 1. `main.cpp` snapshots controls into `Params` (knobs, switch positions with
-   panel polarity fixed, encoder increment, encoder tap edge, gate edge, cv
-   norm). The curve-edit toggle state lives in the chain, not the HAL, so the
-   host tests cover it.
+   panel polarity fixed, encoder increment, encoder tap edge, encoder
+   long-press edge, gate edge, cv norm). The curve-edit and internal-source
+   toggle states live in the chain, not the HAL, so the host tests cover them.
+   The tap / long-press timing itself is HAL code (it needs a millisecond
+   clock), but it produces two clean edges the chain consumes.
 2. `clock.update(gate_edge, n)`.
 3. `chain.ApplyParams(p, clock)`: derives period (free or clocked), forwards
    curve/rate edits, computes `center`/`depth`, steps the generator once,
@@ -255,7 +335,7 @@ Data flow per block (in the audio callback):
    curve, mode) that the slow loop turns into LEDs and 5 Hz serial telemetry.
    Never `PrintLine` from the callback.
 
-Telemetry line (5 Hz): `mode=PAN pos=0.42 ctr=0.50 dep=0.30 T=12.0s ext=0 curve=+0.35 edge=FOLD cv=0.000`.
+Telemetry line (5 Hz): `mode=PAN pos=0.42 ctr=0.50 dep=0.30 T=12.0s ext=0 curve=+0.35 edge=FOLD cv_norm=0.3021 cv=0.000V src=jack`.
 
 ## Testing
 
@@ -275,9 +355,15 @@ where sample-counting matters (workspace memory: never 1000 Hz-style values).
 - **panner:** equal-power center = 0.7071 both sides; hard left/right; PAN with
   identical inputs equals a mono panner (the normalling case); XFADE Out R is
   the complement of Out L; CV law sums to 1.0 for any pos; CV mode ignores
-  audio inputs.
+  audio inputs; internal source gives Out L + Out R = 1.0 (= 5 V) for any pos
+  and ignores the cv input.
+- **cv_in:** `norm = kCvZero` → 0; `norm = kCvZero + 1/kCvScale` → exactly 1 V;
+  |volts| just under `kCvDeadband` → 0; just over → passes through unchanged;
+  `kCvScale = 0` → 0 for any norm; source = volts / 5.
 - **clock:** copied from stutterer.
-- **chain:** an encoder tap toggles edit mode; encoder increments go to rate
+- **chain:** an encoder tap toggles edit mode; a long-press edge toggles the
+  internal source in CV mode and is ignored in PAN / XFADE; the internal-source
+  setting survives a trip through PAN and back; encoder increments go to rate
   in normal mode and to curve in edit mode, never both; depth 0 → pos ==
   center; fold keeps pos in [0, 1] for any center
   and depth; the smoothed position never jumps more than a bound per sample
@@ -293,8 +379,13 @@ Hardware gates, in order, at the first flash session:
 4. Clock: patch a slow clock, confirm the right LED pulses on the beat and
    targets land on edges; unpatch and confirm free-run resumes within the
    timeout.
-5. CV-mode calibration, then an envelope into the v/oct jack and the outs into
-   two filter cutoffs.
+5. CV-mode calibration (including the unpatched-jack measurement), then an
+   envelope into the v/oct jack and the outs into two filter cutoffs. With the
+   jack unpatched, both outputs must read 0 V on a meter.
+6. Generative CV: long press in CV mode, confirm the yellow floor appears and
+   the two outputs drift complementarily on a meter (sum ≈ 5 V). Decide from
+   the step-5 floating measurement whether automatic selection is possible;
+   record the decision in `CLAUDE.md`.
 
 Host tests passing is not "done". Step 5 is the last gate.
 
