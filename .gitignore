@@ -1,0 +1,18 @@
+# Firmware build artifacts
+/build/
+*.o
+*.d
+*.elf
+*.bin
+*.hex
+*.map
+*.lst
+
+# Host test build artifacts
+/build_host/
+
+# Editor / OS noise
+.DS_Store
+.vscode/
+*.swp
+/.superpowers/
