@@ -60,7 +60,8 @@ static void AudioCallback(AudioHandle::InterleavingInputBuffer  in,
                           AudioHandle::InterleavingOutputBuffer out,
                           size_t                                size) {
     hw.ProcessAllControls();
-    const int      n   = (int)(size / 2);
+    int            n   = (int)(size / 2);
+    if (n > legio::kAudioBlockSize) n = legio::kAudioBlockSize;   // stack buffers below are sized for this
     const uint32_t now = System::GetNow();
 
     Params p;
@@ -209,12 +210,23 @@ int main() {
             hw.SetLed(DaisyLegio::LED_LEFT,  yl, yl, 0.0f);
             hw.SetLed(DaisyLegio::LED_RIGHT, yr, yr, 0.0f);
         } else {
-            // Blue = computed position; yellow flash = event; dim yellow floor = internal CV source.
-            float floor = ui_state.internal_active ? kInternalYellowFloor : 0.0f;
-            float yl = target_flash ? 1.0f : floor;
-            float yr = clock_flash  ? 1.0f : floor;
-            hw.SetLed(DaisyLegio::LED_LEFT,  yl, yl, 1.0f - pos);
-            hw.SetLed(DaisyLegio::LED_RIGHT, yr, yr, pos);
+            // Blue = computed position. Yellow: full-brightness 50 ms flash on an event;
+            // otherwise, while the internal CV source is active, a floor that scales with
+            // the blue underneath it (the LED gamma is cubic, so a fixed dim floor would
+            // vanish next to a bright blue) — the pair reads pale instead of pure blue.
+            float blue_l = 1.0f - pos;
+            float blue_r = pos;
+            float floor_l = 0.0f, floor_r = 0.0f;
+            if (ui_state.internal_active) {
+                floor_l = kInternalYellowFloor > 0.6f * blue_l ? kInternalYellowFloor : 0.6f * blue_l;
+                floor_r = kInternalYellowFloor > 0.6f * blue_r ? kInternalYellowFloor : 0.6f * blue_r;
+            }
+            float yl = target_flash ? 1.0f : floor_l;
+            float yr = clock_flash  ? 1.0f : floor_r;
+            if (target_flash) blue_l *= 0.3f;
+            if (clock_flash)  blue_r *= 0.3f;
+            hw.SetLed(DaisyLegio::LED_LEFT,  yl, yl, blue_l);
+            hw.SetLed(DaisyLegio::LED_RIGHT, yr, yr, blue_r);
         }
         hw.UpdateLeds();
 

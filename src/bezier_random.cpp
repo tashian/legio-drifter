@@ -120,7 +120,7 @@ float BezierRandom::Evaluate(float phi) {
     for (int i = 0; i < kMaxSolveIters && std::fabs(f) > kSolveTol; ++i) {
         if (f < 0.0f) lo = s; else hi = s;
         float d    = BezDeriv(0.0f, x1, x2, 1.0f, s);
-        float cand = (d > 1e-6f) ? s - f / d : -1.0f;
+        float cand = (d > 1e-6f) ? s - f / d : -1.0f;  // -1 always fails cand > lo (lo >= 0): forces bisection
         s = (cand > lo && cand < hi) ? cand : 0.5f * (lo + hi);
         f = Bez(0.0f, x1, x2, 1.0f, s) - phi;
     }

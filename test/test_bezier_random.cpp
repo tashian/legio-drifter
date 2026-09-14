@@ -192,8 +192,8 @@ static void test_newton_solve_converges_every_block() {
     }
     // Also with a very slow period (5 min) and a very fast one (20 Hz).
     BezierRandom slow, fast;
-    slow.Init(48000.0f, 9u); slow.SetPeriodSamples(300.0f * 48000.0f); slow.SetCurve(1.0f);
-    fast.Init(48000.0f, 9u); fast.SetPeriodSamples(2400.0f);           fast.SetCurve(-1.0f);
+    slow.Init(48000.0f, 9u); slow.SetPeriodSamples(300.0f * 48000.0f); slow.SetCurve(-1.0f);
+    fast.Init(48000.0f, 9u); fast.SetPeriodSamples(2400.0f);           fast.SetCurve(1.0f);
     float worst = 0.0f;
     for (int i = 0; i < 100000; ++i) {
         slow.Process(48); fast.Process(48);

@@ -40,9 +40,6 @@ class DrifterChain {
     float wander()                 const { return gen_.value(); }
     float cv_volts()               const { return cv_volts_; }
 
-    BezierRandom& generator() { return gen_; }
-    Panner&       panner()    { return panner_; }
-
   private:
     BezierRandom gen_;
     Panner       panner_;

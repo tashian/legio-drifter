@@ -294,6 +294,26 @@ static void test_mode_switching_every_block_is_bounded_and_finite() {
     }
 }
 
+static void test_clip_parks_at_the_rail() {
+    // CLIP with center 0.95 and full depth: pos_raw exceeds 1 often; pos must never.
+    Rig r;
+    Params p;
+    p.edge = Edge::CLIP;
+    p.top_knob = 0.95f;
+    p.bottom_knob = 1.0f;
+    p.encoder_increment = +1;
+    r.run(p, 60);
+    p.encoder_increment = 0;
+    float max_pos = 0.0f;
+    for (int b = 0; b < 3000; ++b) {
+        r.step(p);
+        float pos = r.chain.position();
+        EXPECT_TRUE(pos >= 0.0f && pos <= 1.0f);
+        if (pos > max_pos) max_pos = pos;
+    }
+    EXPECT_TRUE(max_pos > 0.99f);   // it does reach the rail and park there
+}
+
 static void run_all() {
     RUN_TEST(test_defaults);
     RUN_TEST(test_depth_zero_means_pos_equals_center);
@@ -309,6 +329,7 @@ static void run_all() {
     RUN_TEST(test_clock_ratio_divides_and_multiplies);
     RUN_TEST(test_free_rate_restored_after_clock_falls_back);
     RUN_TEST(test_mode_switching_every_block_is_bounded_and_finite);
+    RUN_TEST(test_clip_parks_at_the_rail);
 }
 
 TEST_MAIN()

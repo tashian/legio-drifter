@@ -61,13 +61,14 @@ void DrifterChain::ApplyParams(const Params& p, const Clock& clk, int block_size
             curve_steps_ = ClampInt(curve_steps_ + p.encoder_increment, -kCurveSteps, kCurveSteps);
         } else if (clocked_) {
             ratio_index_ = ClampInt(ratio_index_ + p.encoder_increment, 0, kRatioCount - 1);
+            div_counter_ = 0;
         } else {
             rate_index_ = ClampInt(rate_index_ + p.encoder_increment, 0, kRateSteps);
         }
     }
 
     // --- Period: clocked = measured clock period × ratio; free = encoder log scale.
-    period_ = clocked_ ? clk.period_samples() * kRatioMult[ratio_index_]
+    period_ = clocked_ ? clk.period_samples() * RatioMultiplier(ratio_index_)
                        : FreePeriodSeconds(rate_index_) * sample_rate_;
     gen_.SetPeriodSamples(period_);
     gen_.SetCurve((float)curve_steps_ / (float)kCurveSteps);
