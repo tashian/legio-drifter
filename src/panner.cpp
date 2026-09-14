@@ -56,10 +56,14 @@ void Panner::ProcessBlock(const float* in_l, const float* in_r,
                 break;
             }
             case Mode::CV:
-            default:
-                out_l[i] = 0.0f;   // Task 8
-                out_r[i] = 0.0f;
+            default: {
+                // Linear law so the two outputs always sum to the source: an envelope
+                // split across two destinations keeps its total "presence".
+                float src = internal_ ? 1.0f : cv_s_;   // 1.0 = +5 V at the DC-coupled output
+                out_l[i] = src * (1.0f - pos_s_);
+                out_r[i] = src * pos_s_;
                 break;
+            }
         }
     }
 }
