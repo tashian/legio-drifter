@@ -6,7 +6,7 @@ CXXFLAGS  = -std=c++17 -O2 -Wall -Wextra -Wno-unused-parameter -I../src -I.
 OUT       = ../build_host
 
 # Default test list — extended as new modules are added.
-TESTS = test_smoke test_edge test_cv_in test_clock test_bezier_random test_panner
+TESTS = test_smoke test_edge test_cv_in test_clock test_bezier_random test_panner test_chain
 
 all: $(addprefix $(OUT)/, $(TESTS))
 	@for t in $(TESTS); do \
@@ -33,6 +33,10 @@ $(OUT)/test_bezier_random: test_bezier_random.cpp ../src/bezier_random.cpp | $(O
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 $(OUT)/test_panner: test_panner.cpp ../src/panner.cpp | $(OUT)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+$(OUT)/test_chain: test_chain.cpp ../src/drifter_chain.cpp ../src/bezier_random.cpp \
+        ../src/panner.cpp ../src/clock.cpp | $(OUT)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 clean:
