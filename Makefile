@@ -2,7 +2,7 @@
 TARGET = drifter
 
 # Sources — each DSP task appends its .cpp here.
-CPP_SOURCES = src/main.cpp src/clock.cpp
+CPP_SOURCES = src/main.cpp src/clock.cpp src/bezier_random.cpp
 
 # Pull in the float-printf code from full newlib so PrintLine("%f") actually
 # emits the float (newlib-nano strips this out by default to save ~10KB).
