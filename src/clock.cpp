@@ -50,8 +50,9 @@ void Clock::update(bool gate_edge, int block_size) {
     } else {
         samples_to_last_edge_ += block_size;
         samples_since_edge_   += block_size;
-        // Saturate: hours of silence must not overflow int. 2*max_period_ is above every threshold.
-        int cap = (int)(2.0f * max_period_);
+        // Saturate: hours of silence must not overflow int. 5*max_period_ exceeds the
+        // worst-case fallback timeout of 4*max_period_.
+        int cap = (int)(5.0f * max_period_);
         if (samples_to_last_edge_ > cap) samples_to_last_edge_ = cap;
         if (samples_since_edge_   > cap) samples_since_edge_   = cap;
         if (is_external_) {

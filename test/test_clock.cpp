@@ -79,6 +79,20 @@ static void test_lone_edge_is_forgotten_after_max_period() {
     EXPECT_NEAR(c.period_samples(), 48000.0f, 100.0f);
 }
 
+static void test_slowest_clock_still_falls_back() {
+    Clock c;
+    c.Init(48000.0f);
+    // 16 s clock = 768000 samples = 16000 blocks. Timeout = 4 periods = 64 s.
+    edge_then_silence(c, 16000);
+    c.update(true, 48);
+    EXPECT_TRUE(c.is_external());
+    EXPECT_NEAR(c.period_samples(), 768000.0f, 100.0f);
+    for (int i = 0; i < 60000; ++i) c.update(false, 48);   // 60 s: still locked
+    EXPECT_TRUE(c.is_external());
+    for (int i = 0; i < 6000; ++i) c.update(false, 48);    // 66 s: fallen back
+    EXPECT_TRUE(!c.is_external());
+}
+
 static void test_tick_true_only_on_edge_block() {
     Clock c;
     c.Init(48000.0f);
@@ -96,6 +110,7 @@ static void run_all() {
     RUN_TEST(test_slow_clock_waits_four_periods);
     RUN_TEST(test_accepts_ten_second_clock);
     RUN_TEST(test_lone_edge_is_forgotten_after_max_period);
+    RUN_TEST(test_slowest_clock_still_falls_back);
     RUN_TEST(test_tick_true_only_on_edge_block);
 }
 
