@@ -17,7 +17,7 @@ using legio::Mode;
 using legio::Params;
 
 DaisyLegio   hw;
-Clock        clock;
+Clock        g_clock;
 DrifterChain chain;
 
 namespace {
@@ -25,7 +25,7 @@ namespace {
 constexpr uint32_t kTapMaxMs     = 400;   // release before this = tap
 constexpr uint32_t kLongPressMs  = 800;   // hold past this = long press (fires once, while held)
 constexpr uint32_t kFlashMs      = 50;    // yellow event flash length
-constexpr float    kInternalYellowFloor = 0.15f;
+constexpr float    kInternalYellowFloor = 0.3f;
 
 // Encoder press state, carried across audio callbacks.
 bool     s_press_armed = false;
@@ -105,9 +105,9 @@ static void AudioCallback(AudioHandle::InterleavingInputBuffer  in,
     // --- Clock and chain.
     bool gate_edge = hw.gate.Trig();
     p.gate_edge    = gate_edge;
-    clock.update(gate_edge, n);
+    g_clock.update(gate_edge, n);
 
-    chain.ApplyParams(p, clock, n);
+    chain.ApplyParams(p, g_clock, n);
 
     // De-interleave, process, re-interleave. n <= 48 always.
     float in_l[legio::kAudioBlockSize], in_r[legio::kAudioBlockSize];
@@ -160,12 +160,17 @@ static uint32_t SeedFromAdcNoise() {
 int main() {
     hw.Init();
 
-    // Bypass mode: encoder held at boot.
-    hw.ProcessAllControls();
+    // Bypass mode: encoder held at boot. Switch::Debounce() shifts in one bit per
+    // call, no faster than 1 kHz, and Pressed() needs eight consecutive 1s, so
+    // poll for 12 ms before sampling.
+    for (int i = 0; i < 12; ++i) {
+        hw.ProcessAllControls();
+        System::Delay(1);
+    }
     bool bypass_mode = hw.encoder.Pressed();
 
     hw.seed.StartLog(false);
-    clock.Init(legio::kSampleRate);
+    g_clock.Init(legio::kSampleRate);
     hw.StartAdc();
     System::Delay(20);                          // let the ADC DMA fill before seeding
     chain.Init(legio::kSampleRate, SeedFromAdcNoise());
