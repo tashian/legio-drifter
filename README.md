@@ -1,17 +1,16 @@
 # legio-drifter
 
-Random Bézier auto-panner / crossfader / CV panner firmware for the Noise Engineering Legio Eurorack module.
+Random Bézier auto-panner / crossfader / CV panner firmware for the [Noise Engineering Legio](https://noiseengineering.us/) Eurorack platform.
 
-Part of a family of alternative firmwares for the [Noise Engineering Legio](https://noiseengineering.us/) platform (Daisy Patch SM, STM32H750):
-[legio-sawstack](https://github.com/tashian/legio-sawstack) (supersaw oscillator) ·
-[legio-stutterer](https://github.com/tashian/legio-stutterer) (stutter → tape delay → DJ filter) ·
-[legio-drifter](https://github.com/tashian/legio-drifter) (random Bézier panner / crossfader / CV).
-Flash any of them onto a Legio via DFU; the stock firmware can be restored from Noise Engineering's customer portal.
+## Controls
 
-- **Left switch:** PAN (up) / XFADE (center) / CV (down).
-- **Right switch:** edge behavior when the image is pushed past the rails: CLIP / FOLD / WRAP.
+- **Left switch:** AUDIO PAN (up) / XFADE (center) / CV PAN (down).
+  - AUDIO PAN makes the module act as an audio panner
+  - XFADE turns it into a crossfader (mono output on L)
+  - CV PAN makes the module act as a CV panner for CV sent to the V/OCT input jack
 - **Top knob + CV:** where the image sits (left … right / A … B).
 - **Bottom knob + CV:** how far the random wander pushes it.
+- **Right switch:** edge behavior when the image is pushed past the rails: CLIP / FOLD / WRAP.
 - **Encoder:** rate (free: 5 min … 20 Hz; clocked: ÷8 … ×8). Tap to edit the curve shape
   instead (LEDs turn yellow). Long-press in CV mode to use an internal +5 V source and turn
   the outputs into a complementary pair of slow random voltages.
