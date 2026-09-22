@@ -16,6 +16,10 @@ Random Bézier auto-panner / crossfader / CV panner firmware for the [Noise Engi
   the outputs into a complementary pair of slow random voltages.
 - **Gate in:** clock. Each qualifying edge lands a new random target on the beat.
 
+How the right switch maps an out-of-range position back into the field:
+
+![Edge behavior: CLIP, FOLD and WRAP transfer curves with sample input/output values](docs/img/edge-behavior.svg)
+
 Build: `make -C lib/libDaisy && make`. Tests: `make -C test`. Flash: `make program-dfu`.
 See [`AGENTS.md`](AGENTS.md) for layout, behavior notes, and Legio hardware quirks.
 
