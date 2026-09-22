@@ -1,5 +1,6 @@
 # Firmware build artifacts
-/build/
+build/
+build_host/
 *.o
 *.d
 *.elf
@@ -7,12 +8,17 @@
 *.hex
 *.map
 *.lst
+*.dfu
 
-# Host test build artifacts
-/build_host/
-
-# Editor / OS noise
+# Editor / OS / tooling noise
 .DS_Store
 .vscode/
+.idea/
+.cache/
+.clangd
+compile_commands.json
 *.swp
-/.superpowers/
+*~
+
+# Agent scratch
+.superpowers/

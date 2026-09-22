@@ -1,6 +1,8 @@
 // src/params.h
 #pragma once
 
+#include "cv_in.h"
+
 namespace legio {
 
 // Left switch, panel-relative: up = PAN, center = XFADE, down = CV.
@@ -13,7 +15,7 @@ struct Params {
     // Continuous controls, 0..1 from the ADC (knob + CV jack summed in hardware).
     float top_knob    = 0.5f;     // center: 0 = left / A, 1 = right / B
     float bottom_knob = 0.0f;     // depth:  0 = plain CV panner, 1 = full-field wander
-    float cv_norm     = 0.3019f;  // raw v/oct ADC 0..1 (default = calibrated 0 V)
+    float cv_norm     = kCvZero;  // raw v/oct ADC 0..1 (default = calibrated 0 V)
 
     // Switches.
     Mode mode = Mode::PAN;

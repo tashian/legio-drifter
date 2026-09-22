@@ -37,14 +37,38 @@ make -C test           # host DSP tests (no hardware)
 make program-dfu       # flash (module must be in DFU mode first)
 ```
 
-DFU entry, `Error 74`, and `screen`/`cat` port contention: see `../AGENTS.md`. Telemetry at 5 Hz:
+DFU entry, `Error 74`, and `screen`/`cat` port contention: see "Legio hardware notes" below. Telemetry at 5 Hz:
 `mode=PAN pos=0.42 ctr=0.50 dep=0.30 T=12.0s ext=0 curve=+0.35 edge=FOLD cv_norm=0.3021 cv=0.000V src=jack`
 (appends ` [curve edit]` while curve-edit mode is active)
 
-## Hardware quirks
+## Legio hardware notes (shared across all Legio firmware in this family)
 
-The shared Legio lessons (3 ADC channels, inverted Switch3 polarity, `-u _printf_float`, no
-`PrintLine` in the audio callback) are in `../AGENTS.md`. Specific to this app:
+1. **Legio has 3 ADC channels, not 4.** `CONTROL_KNOB_TOP` and `CONTROL_KNOB_BOTTOM` each read
+   **the analog sum of the knob position + the CV jack above it** — they cannot be separated.
+   `CONTROL_PITCH` is the dedicated v/oct jack. Treat knob+CV summing as a feature.
+2. **`Switch3.Read()` polarity is inverted vs. the panel.** libDaisy returns 0/1/2 =
+   CENTER/POS_UP/POS_DOWN, but on Legio's panel `POS_UP=1` is **panel DOWN** and `POS_DOWN=2` is
+   **panel UP**. `main.cpp` inverts once so the rest of the code is panel-relative. Verified by feel
+   — don't "correct" it.
+3. **newlib-nano strips float printf.** `PrintLine("%f", x)` prints nothing unless `-u _printf_float`
+   is in `LDFLAGS` (already set in the Makefile, ~10 KB flash). Keep it or float telemetry goes silent.
+4. **V/oct needs per-module calibration.** A floating jack reads a non-zero indeterminate ADC value;
+   pushing that through `pow(2, volts)` pins pitch at an extreme. Never ship a v/oct path that
+   defaults to a wild value — measure 0 V and +1 V on real hardware first, or leave it disabled.
+5. **The audio callback is ~1 ms** (48-sample blocks @ 48 kHz). Never call `PrintLine` from inside
+   it — it crashes audio. Telemetry goes through a `volatile` UI snapshot read from a slow loop.
+6. **Big buffers (delays, loopers) live in SDRAM** via `DSY_SDRAM_BSS` at the point of definition;
+   `dsp_common.h` stubs the macro empty for host builds so the same source compiles both ways.
+
+**Flashing.** DFU entry is BOOT + RESET on the Patch SM submodule on the back of the module. After
+`make program-dfu`, dfu-util's "Error during download get_status" / `Error 74` is harmless (the
+device resets faster than dfu-util can ack), but the module sometimes won't re-enumerate without a
+manual reseat. `/dev/cu.usbmodem*` missing right after flashing isn't necessarily a firmware crash.
+
+**Serial.** `screen /dev/cu.usbmodem* 115200`. If `screen` is already attached in another terminal it
+holds the device exclusively and `cat`/other readers fail — check `screen -ls`.
+
+## Hardware quirks specific to this app
 
 - **Audio inputs are AC coupled**, outputs are DC coupled (±5 V). CV mode writes DC to the
   outputs on purpose. In R is normalled to In L in hardware.
@@ -72,7 +96,8 @@ The shared Legio lessons (3 ADC channels, inverted Switch3 polarity, `-u _printf
 
 ## CV-mode calibration
 
-Constants in `src/cv_in.h` were reused from sawstack (same Patch SM, measured 2026-05-10):
+Constants in `src/cv_in.h` were reused from sawstack (measured on the author's Patch SM, 2026-05-10;
+see README "Calibrating the v/oct input" for how to measure your own):
 `kCvZero = 0.3019`, `kCvScale = 7.6805`. Measurements taken on this firmware:
 
 - Unpatched v/oct jack: **not yet measured** (Task 12 fills this in).

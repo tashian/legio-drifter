@@ -12,3 +12,19 @@ Random Bézier auto-panner / crossfader / CV panner firmware for the Noise Engin
 - **Gate in:** clock. Each qualifying edge lands a new random target on the beat.
 
 Build: `make -C lib/libDaisy && make`. Tests: `make -C test`. Flash: `make program-dfu`.
+See [`AGENTS.md`](AGENTS.md) for layout, behavior notes, and Legio hardware quirks.
+
+## Calibrating the v/oct input for your module
+
+Only **CV mode** reads the v/oct jack (as a plain DC input, not as pitch). The Patch SM's ADC
+offset and gain vary slightly per unit; `src/cv_in.h` holds `kCvZero` / `kCvScale` measured on the
+author's module. If CV mode reads a patched 0 V as slightly non-zero, or +5 V as not-quite-5 V:
+
+1. Flash, then open serial telemetry: `screen /dev/cu.usbmodem* 115200`. Each line includes
+   `cv_norm=<f>` (raw 0…1 ADC reading) and `cv=<f>V` (converted with the current constants).
+2. Patch a known **0 V** into the v/oct jack; note `cv_norm` → `kCvZero`.
+3. Patch a known **+1 V**; note `cv_norm` → `raw_1v`. `kCvScale = 1.0 / (raw_1v - kCvZero)`.
+4. Edit `src/cv_in.h`, rebuild, reflash.
+
+`kCvScale = 0` disables the path (every reading becomes 0 V). A ±0.05 V deadband around 0 V is
+applied after conversion so a patched 0 V reads as exactly 0.
