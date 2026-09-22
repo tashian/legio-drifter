@@ -96,9 +96,10 @@ holds the device exclusively and `cat`/other readers fail — check `screen -ls`
 
 ## CV-mode calibration
 
-Constants in `src/cv_in.h` were reused from sawstack (measured on the author's Patch SM, 2026-05-10;
-see README "Calibrating the v/oct input" for how to measure your own):
-`kCvZero = 0.3019`, `kCvScale = 7.6805`. Measurements taken on this firmware:
+Defaults in `src/cv_in.h` were reused from sawstack (measured on the author's Patch SM, 2026-05-10);
+a gitignored `src/calibration_local.h` (copy the `.example`) overrides them via `__has_include`. See
+README "Calibrating the v/oct input" for the procedure. Current defaults: `kCvZero = 0.3019`,
+`kCvScale = 7.6805`. Measurements taken on this firmware:
 
 - Unpatched v/oct jack: **not yet measured** (Task 12 fills this in).
 - 0 V patched: **not yet measured**.

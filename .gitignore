@@ -22,3 +22,6 @@ compile_commands.json
 
 # Agent scratch
 .superpowers/
+
+# Per-module v/oct calibration (copy calibration_local.h.example)
+calibration_local.h

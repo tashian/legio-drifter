@@ -1,0 +1,10 @@
+// Per-module v/oct calibration override for drifter (CV mode).
+//
+// Copy this file to calibration_local.h (same directory; it is gitignored),
+// fill in the values you measured on YOUR module, rebuild, reflash.
+// Procedure: README.md → "Calibrating the v/oct input for your module".
+//
+// This file is included inside namespace legio — keep it to these two constants.
+
+constexpr float kCvZero  = 0.3019f;   // raw ADC reading (0..1) with 0 V patched into the v/oct jack
+constexpr float kCvScale = 7.6805f;   // 1.0 / (raw_at_1V - kCvZero); 0 disables the path

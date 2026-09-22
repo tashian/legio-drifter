@@ -24,7 +24,13 @@ author's module. If CV mode reads a patched 0 V as slightly non-zero, or +5 V as
    `cv_norm=<f>` (raw 0…1 ADC reading) and `cv=<f>V` (converted with the current constants).
 2. Patch a known **0 V** into the v/oct jack; note `cv_norm` → `kCvZero`.
 3. Patch a known **+1 V**; note `cv_norm` → `raw_1v`. `kCvScale = 1.0 / (raw_1v - kCvZero)`.
-4. Edit `src/cv_in.h`, rebuild, reflash.
+4. `cp src/calibration_local.h.example src/calibration_local.h`, put your two values in it, rebuild,
+   reflash. The file is gitignored, so your values survive `git pull`. (Editing the defaults in
+   `src/cv_in.h` also works.)
 
 `kCvScale = 0` disables the path (every reading becomes 0 V). A ±0.05 V deadband around 0 V is
 applied after conversion so a patched 0 V reads as exactly 0.
+
+## License
+
+MIT — see [`LICENSE`](LICENSE). libDaisy (submodule) is MIT-licensed by Electrosmith.
