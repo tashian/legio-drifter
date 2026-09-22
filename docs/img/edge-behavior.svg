@@ -1,174 +1,174 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="640" viewBox="0 0 1600 640" font-family="Helvetica, Arial, sans-serif">
-<rect width="1600" height="640" fill="#ffffff"/>
-<text x="800.0" y="48" text-anchor="middle" font-size="26" font-weight="bold" fill="#222222">Edge behavior (right switch) — how an out-of-range position maps back into the field</text>
-<text x="800.0" y="78" text-anchor="middle" font-size="16" fill="#666666">pos_raw = center + 0.5 · depth · r  →  pos = edge(pos_raw)  →  5 ms smoother  →  gains.  All three rules are the identity inside 0…1.</text>
+<rect width="1600" height="640" fill="#0d1117"/>
+<text x="800.0" y="48" text-anchor="middle" font-size="26" font-weight="bold" fill="#e6edf3">Edge behavior (right switch) — how an out-of-range position maps back into the field</text>
+<text x="800.0" y="78" text-anchor="middle" font-size="16" fill="#9aa4b2">pos_raw = center + 0.5 · depth · r  →  pos = edge(pos_raw)  →  5 ms smoother  →  gains.  All three rules are the identity inside 0…1.</text>
 <g transform="translate(60,0)">
 <rect x="50" y="100" width="190" height="30" rx="6" fill="#f5c400"/>
-<text x="145" y="121" text-anchor="middle" font-size="16" font-weight="bold" fill="#222222">UP · CLIP</text>
-<rect x="170.0" y="150" width="120.0" height="180" fill="#f1f1f1"/>
-<text x="230.0" y="164" text-anchor="middle" font-size="12" fill="#666666">in range</text>
-<line x1="50" y1="330" x2="410" y2="330" stroke="#666666" stroke-width="1.5"/>
-<line x1="50" y1="150" x2="50" y2="330" stroke="#666666" stroke-width="1.5"/>
-<line x1="50.0" y1="330" x2="50.0" y2="335" stroke="#666666"/>
-<text x="50.0" y="350" text-anchor="middle" font-size="12" fill="#666666">-1</text>
-<line x1="110.0" y1="330" x2="110.0" y2="335" stroke="#666666"/>
-<text x="110.0" y="350" text-anchor="middle" font-size="12" fill="#666666">-0.5</text>
-<line x1="170.0" y1="330" x2="170.0" y2="335" stroke="#666666"/>
-<text x="170.0" y="350" text-anchor="middle" font-size="12" fill="#666666">0</text>
-<line x1="230.0" y1="330" x2="230.0" y2="335" stroke="#666666"/>
-<text x="230.0" y="350" text-anchor="middle" font-size="12" fill="#666666">0.5</text>
-<line x1="290.0" y1="330" x2="290.0" y2="335" stroke="#666666"/>
-<text x="290.0" y="350" text-anchor="middle" font-size="12" fill="#666666">1</text>
-<line x1="350.0" y1="330" x2="350.0" y2="335" stroke="#666666"/>
-<text x="350.0" y="350" text-anchor="middle" font-size="12" fill="#666666">1.5</text>
-<line x1="410.0" y1="330" x2="410.0" y2="335" stroke="#666666"/>
-<text x="410.0" y="350" text-anchor="middle" font-size="12" fill="#666666">2</text>
-<line x1="45" y1="330.0" x2="50" y2="330.0" stroke="#666666"/>
-<text x="41" y="334.0" text-anchor="end" font-size="12" fill="#666666">0</text>
-<line x1="45" y1="240.0" x2="50" y2="240.0" stroke="#666666"/>
-<text x="41" y="244.0" text-anchor="end" font-size="12" fill="#666666">0.5</text>
-<line x1="45" y1="150.0" x2="50" y2="150.0" stroke="#666666"/>
-<text x="41" y="154.0" text-anchor="end" font-size="12" fill="#666666">1</text>
-<text x="230.0" y="372" text-anchor="middle" font-size="13" fill="#222222">input position (pos_raw)</text>
-<text transform="translate(18,240.0) rotate(-90)" text-anchor="middle" font-size="13" fill="#222222">output position</text>
-<polyline points="50.0,330.0 170.0,330.0 290.0,150.0 410.0,150.0" stroke="#1f5fbf" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="230.0" y="408" text-anchor="middle" font-size="14" fill="#222222">Clamp to [0, 1]. The image parks at the rail.</text>
-<text x="170.0" y="445" text-anchor="end" font-size="13" font-weight="bold" fill="#666666">input</text>
-<text x="290.0" y="445" text-anchor="start" font-size="13" font-weight="bold" fill="#666666">output</text>
-<line x1="110.0" y1="453" x2="350.0" y2="453" stroke="#666666"/>
-<text x="170.0" y="477" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">-0.5</text>
-<text x="230.0" y="477" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="477" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#1f5fbf">0.00</text>
-<text x="170.0" y="501" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">-0.2</text>
-<text x="230.0" y="501" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="501" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#1f5fbf">0.00</text>
-<text x="170.0" y="525" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">+0.3</text>
-<text x="230.0" y="525" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="525" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace"  fill="#222222">0.30</text>
-<text x="170.0" y="549" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">+0.8</text>
-<text x="230.0" y="549" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="549" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace"  fill="#222222">0.80</text>
-<text x="170.0" y="573" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">+1.2</text>
-<text x="230.0" y="573" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="573" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#1f5fbf">1.00</text>
-<text x="170.0" y="597" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">+1.5</text>
-<text x="230.0" y="597" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="597" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#1f5fbf">1.00</text>
+<text x="145" y="121" text-anchor="middle" font-size="16" font-weight="bold" fill="#e6edf3">UP · CLIP</text>
+<rect x="170.0" y="150" width="120.0" height="180" fill="#1c2430"/>
+<text x="230.0" y="164" text-anchor="middle" font-size="12" fill="#9aa4b2">in range</text>
+<line x1="50" y1="330" x2="410" y2="330" stroke="#9aa4b2" stroke-width="1.5"/>
+<line x1="50" y1="150" x2="50" y2="330" stroke="#9aa4b2" stroke-width="1.5"/>
+<line x1="50.0" y1="330" x2="50.0" y2="335" stroke="#9aa4b2"/>
+<text x="50.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">-1</text>
+<line x1="110.0" y1="330" x2="110.0" y2="335" stroke="#9aa4b2"/>
+<text x="110.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">-0.5</text>
+<line x1="170.0" y1="330" x2="170.0" y2="335" stroke="#9aa4b2"/>
+<text x="170.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">0</text>
+<line x1="230.0" y1="330" x2="230.0" y2="335" stroke="#9aa4b2"/>
+<text x="230.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">0.5</text>
+<line x1="290.0" y1="330" x2="290.0" y2="335" stroke="#9aa4b2"/>
+<text x="290.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">1</text>
+<line x1="350.0" y1="330" x2="350.0" y2="335" stroke="#9aa4b2"/>
+<text x="350.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">1.5</text>
+<line x1="410.0" y1="330" x2="410.0" y2="335" stroke="#9aa4b2"/>
+<text x="410.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">2</text>
+<line x1="45" y1="330.0" x2="50" y2="330.0" stroke="#9aa4b2"/>
+<text x="41" y="334.0" text-anchor="end" font-size="12" fill="#9aa4b2">0</text>
+<line x1="45" y1="240.0" x2="50" y2="240.0" stroke="#9aa4b2"/>
+<text x="41" y="244.0" text-anchor="end" font-size="12" fill="#9aa4b2">0.5</text>
+<line x1="45" y1="150.0" x2="50" y2="150.0" stroke="#9aa4b2"/>
+<text x="41" y="154.0" text-anchor="end" font-size="12" fill="#9aa4b2">1</text>
+<text x="230.0" y="372" text-anchor="middle" font-size="13" fill="#e6edf3">input position (pos_raw)</text>
+<text transform="translate(18,240.0) rotate(-90)" text-anchor="middle" font-size="13" fill="#e6edf3">output position</text>
+<polyline points="50.0,330.0 170.0,330.0 290.0,150.0 410.0,150.0" stroke="#5aa9ff" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="230.0" y="408" text-anchor="middle" font-size="14" fill="#e6edf3">Clamp to [0, 1]. The image parks at the rail.</text>
+<text x="170.0" y="445" text-anchor="end" font-size="13" font-weight="bold" fill="#9aa4b2">input</text>
+<text x="290.0" y="445" text-anchor="start" font-size="13" font-weight="bold" fill="#9aa4b2">output</text>
+<line x1="110.0" y1="453" x2="350.0" y2="453" stroke="#9aa4b2"/>
+<text x="170.0" y="477" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">-0.5</text>
+<text x="230.0" y="477" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="477" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#5aa9ff">0.00</text>
+<text x="170.0" y="501" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">-0.2</text>
+<text x="230.0" y="501" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="501" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#5aa9ff">0.00</text>
+<text x="170.0" y="525" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">+0.3</text>
+<text x="230.0" y="525" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="525" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace"  fill="#e6edf3">0.30</text>
+<text x="170.0" y="549" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">+0.8</text>
+<text x="230.0" y="549" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="549" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace"  fill="#e6edf3">0.80</text>
+<text x="170.0" y="573" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">+1.2</text>
+<text x="230.0" y="573" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="573" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#5aa9ff">1.00</text>
+<text x="170.0" y="597" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">+1.5</text>
+<text x="230.0" y="597" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="597" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#5aa9ff">1.00</text>
 </g>
 <g transform="translate(570,0)">
 <rect x="50" y="100" width="190" height="30" rx="6" fill="#f5c400"/>
-<text x="145" y="121" text-anchor="middle" font-size="16" font-weight="bold" fill="#222222">CENTER · FOLD</text>
-<rect x="170.0" y="150" width="120.0" height="180" fill="#f1f1f1"/>
-<text x="230.0" y="164" text-anchor="middle" font-size="12" fill="#666666">in range</text>
-<line x1="50" y1="330" x2="410" y2="330" stroke="#666666" stroke-width="1.5"/>
-<line x1="50" y1="150" x2="50" y2="330" stroke="#666666" stroke-width="1.5"/>
-<line x1="50.0" y1="330" x2="50.0" y2="335" stroke="#666666"/>
-<text x="50.0" y="350" text-anchor="middle" font-size="12" fill="#666666">-1</text>
-<line x1="110.0" y1="330" x2="110.0" y2="335" stroke="#666666"/>
-<text x="110.0" y="350" text-anchor="middle" font-size="12" fill="#666666">-0.5</text>
-<line x1="170.0" y1="330" x2="170.0" y2="335" stroke="#666666"/>
-<text x="170.0" y="350" text-anchor="middle" font-size="12" fill="#666666">0</text>
-<line x1="230.0" y1="330" x2="230.0" y2="335" stroke="#666666"/>
-<text x="230.0" y="350" text-anchor="middle" font-size="12" fill="#666666">0.5</text>
-<line x1="290.0" y1="330" x2="290.0" y2="335" stroke="#666666"/>
-<text x="290.0" y="350" text-anchor="middle" font-size="12" fill="#666666">1</text>
-<line x1="350.0" y1="330" x2="350.0" y2="335" stroke="#666666"/>
-<text x="350.0" y="350" text-anchor="middle" font-size="12" fill="#666666">1.5</text>
-<line x1="410.0" y1="330" x2="410.0" y2="335" stroke="#666666"/>
-<text x="410.0" y="350" text-anchor="middle" font-size="12" fill="#666666">2</text>
-<line x1="45" y1="330.0" x2="50" y2="330.0" stroke="#666666"/>
-<text x="41" y="334.0" text-anchor="end" font-size="12" fill="#666666">0</text>
-<line x1="45" y1="240.0" x2="50" y2="240.0" stroke="#666666"/>
-<text x="41" y="244.0" text-anchor="end" font-size="12" fill="#666666">0.5</text>
-<line x1="45" y1="150.0" x2="50" y2="150.0" stroke="#666666"/>
-<text x="41" y="154.0" text-anchor="end" font-size="12" fill="#666666">1</text>
-<text x="230.0" y="372" text-anchor="middle" font-size="13" fill="#222222">input position (pos_raw)</text>
-<text transform="translate(18,240.0) rotate(-90)" text-anchor="middle" font-size="13" fill="#222222">output position</text>
-<polyline points="50.0,150.0 170.0,330.0 290.0,150.0 410.0,330.0" stroke="#1f5fbf" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="230.0" y="408" text-anchor="middle" font-size="14" fill="#222222">Reflect about 0 and 1. The image bounces off the rail and keeps moving.</text>
-<text x="170.0" y="445" text-anchor="end" font-size="13" font-weight="bold" fill="#666666">input</text>
-<text x="290.0" y="445" text-anchor="start" font-size="13" font-weight="bold" fill="#666666">output</text>
-<line x1="110.0" y1="453" x2="350.0" y2="453" stroke="#666666"/>
-<text x="170.0" y="477" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">-0.5</text>
-<text x="230.0" y="477" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="477" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#1f5fbf">0.50</text>
-<text x="170.0" y="501" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">-0.2</text>
-<text x="230.0" y="501" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="501" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#1f5fbf">0.20</text>
-<text x="170.0" y="525" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">+0.3</text>
-<text x="230.0" y="525" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="525" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace"  fill="#222222">0.30</text>
-<text x="170.0" y="549" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">+0.8</text>
-<text x="230.0" y="549" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="549" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace"  fill="#222222">0.80</text>
-<text x="170.0" y="573" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">+1.2</text>
-<text x="230.0" y="573" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="573" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#1f5fbf">0.80</text>
-<text x="170.0" y="597" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">+1.5</text>
-<text x="230.0" y="597" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="597" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#1f5fbf">0.50</text>
+<text x="145" y="121" text-anchor="middle" font-size="16" font-weight="bold" fill="#e6edf3">CENTER · FOLD</text>
+<rect x="170.0" y="150" width="120.0" height="180" fill="#1c2430"/>
+<text x="230.0" y="164" text-anchor="middle" font-size="12" fill="#9aa4b2">in range</text>
+<line x1="50" y1="330" x2="410" y2="330" stroke="#9aa4b2" stroke-width="1.5"/>
+<line x1="50" y1="150" x2="50" y2="330" stroke="#9aa4b2" stroke-width="1.5"/>
+<line x1="50.0" y1="330" x2="50.0" y2="335" stroke="#9aa4b2"/>
+<text x="50.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">-1</text>
+<line x1="110.0" y1="330" x2="110.0" y2="335" stroke="#9aa4b2"/>
+<text x="110.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">-0.5</text>
+<line x1="170.0" y1="330" x2="170.0" y2="335" stroke="#9aa4b2"/>
+<text x="170.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">0</text>
+<line x1="230.0" y1="330" x2="230.0" y2="335" stroke="#9aa4b2"/>
+<text x="230.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">0.5</text>
+<line x1="290.0" y1="330" x2="290.0" y2="335" stroke="#9aa4b2"/>
+<text x="290.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">1</text>
+<line x1="350.0" y1="330" x2="350.0" y2="335" stroke="#9aa4b2"/>
+<text x="350.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">1.5</text>
+<line x1="410.0" y1="330" x2="410.0" y2="335" stroke="#9aa4b2"/>
+<text x="410.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">2</text>
+<line x1="45" y1="330.0" x2="50" y2="330.0" stroke="#9aa4b2"/>
+<text x="41" y="334.0" text-anchor="end" font-size="12" fill="#9aa4b2">0</text>
+<line x1="45" y1="240.0" x2="50" y2="240.0" stroke="#9aa4b2"/>
+<text x="41" y="244.0" text-anchor="end" font-size="12" fill="#9aa4b2">0.5</text>
+<line x1="45" y1="150.0" x2="50" y2="150.0" stroke="#9aa4b2"/>
+<text x="41" y="154.0" text-anchor="end" font-size="12" fill="#9aa4b2">1</text>
+<text x="230.0" y="372" text-anchor="middle" font-size="13" fill="#e6edf3">input position (pos_raw)</text>
+<text transform="translate(18,240.0) rotate(-90)" text-anchor="middle" font-size="13" fill="#e6edf3">output position</text>
+<polyline points="50.0,150.0 170.0,330.0 290.0,150.0 410.0,330.0" stroke="#5aa9ff" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="230.0" y="408" text-anchor="middle" font-size="14" fill="#e6edf3">Reflect about 0 and 1. The image bounces off the rail and keeps moving.</text>
+<text x="170.0" y="445" text-anchor="end" font-size="13" font-weight="bold" fill="#9aa4b2">input</text>
+<text x="290.0" y="445" text-anchor="start" font-size="13" font-weight="bold" fill="#9aa4b2">output</text>
+<line x1="110.0" y1="453" x2="350.0" y2="453" stroke="#9aa4b2"/>
+<text x="170.0" y="477" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">-0.5</text>
+<text x="230.0" y="477" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="477" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#5aa9ff">0.50</text>
+<text x="170.0" y="501" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">-0.2</text>
+<text x="230.0" y="501" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="501" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#5aa9ff">0.20</text>
+<text x="170.0" y="525" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">+0.3</text>
+<text x="230.0" y="525" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="525" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace"  fill="#e6edf3">0.30</text>
+<text x="170.0" y="549" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">+0.8</text>
+<text x="230.0" y="549" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="549" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace"  fill="#e6edf3">0.80</text>
+<text x="170.0" y="573" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">+1.2</text>
+<text x="230.0" y="573" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="573" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#5aa9ff">0.80</text>
+<text x="170.0" y="597" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">+1.5</text>
+<text x="230.0" y="597" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="597" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#5aa9ff">0.50</text>
 </g>
 <g transform="translate(1080,0)">
 <rect x="50" y="100" width="190" height="30" rx="6" fill="#f5c400"/>
-<text x="145" y="121" text-anchor="middle" font-size="16" font-weight="bold" fill="#222222">DOWN · WRAP</text>
-<rect x="170.0" y="150" width="120.0" height="180" fill="#f1f1f1"/>
-<text x="230.0" y="164" text-anchor="middle" font-size="12" fill="#666666">in range</text>
-<line x1="50" y1="330" x2="410" y2="330" stroke="#666666" stroke-width="1.5"/>
-<line x1="50" y1="150" x2="50" y2="330" stroke="#666666" stroke-width="1.5"/>
-<line x1="50.0" y1="330" x2="50.0" y2="335" stroke="#666666"/>
-<text x="50.0" y="350" text-anchor="middle" font-size="12" fill="#666666">-1</text>
-<line x1="110.0" y1="330" x2="110.0" y2="335" stroke="#666666"/>
-<text x="110.0" y="350" text-anchor="middle" font-size="12" fill="#666666">-0.5</text>
-<line x1="170.0" y1="330" x2="170.0" y2="335" stroke="#666666"/>
-<text x="170.0" y="350" text-anchor="middle" font-size="12" fill="#666666">0</text>
-<line x1="230.0" y1="330" x2="230.0" y2="335" stroke="#666666"/>
-<text x="230.0" y="350" text-anchor="middle" font-size="12" fill="#666666">0.5</text>
-<line x1="290.0" y1="330" x2="290.0" y2="335" stroke="#666666"/>
-<text x="290.0" y="350" text-anchor="middle" font-size="12" fill="#666666">1</text>
-<line x1="350.0" y1="330" x2="350.0" y2="335" stroke="#666666"/>
-<text x="350.0" y="350" text-anchor="middle" font-size="12" fill="#666666">1.5</text>
-<line x1="410.0" y1="330" x2="410.0" y2="335" stroke="#666666"/>
-<text x="410.0" y="350" text-anchor="middle" font-size="12" fill="#666666">2</text>
-<line x1="45" y1="330.0" x2="50" y2="330.0" stroke="#666666"/>
-<text x="41" y="334.0" text-anchor="end" font-size="12" fill="#666666">0</text>
-<line x1="45" y1="240.0" x2="50" y2="240.0" stroke="#666666"/>
-<text x="41" y="244.0" text-anchor="end" font-size="12" fill="#666666">0.5</text>
-<line x1="45" y1="150.0" x2="50" y2="150.0" stroke="#666666"/>
-<text x="41" y="154.0" text-anchor="end" font-size="12" fill="#666666">1</text>
-<text x="230.0" y="372" text-anchor="middle" font-size="13" fill="#222222">input position (pos_raw)</text>
-<text transform="translate(18,240.0) rotate(-90)" text-anchor="middle" font-size="13" fill="#222222">output position</text>
-<line x1="50.0" y1="330.0" x2="170.0" y2="150.0" stroke="#1f5fbf" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
-<line x1="170.0" y1="330.0" x2="290.0" y2="150.0" stroke="#1f5fbf" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
-<line x1="290.0" y1="330.0" x2="410.0" y2="150.0" stroke="#1f5fbf" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
-<line x1="170.0" y1="150" x2="170.0" y2="330" stroke="#666666" stroke-dasharray="4 4"/>
-<line x1="290.0" y1="150" x2="290.0" y2="330" stroke="#666666" stroke-dasharray="4 4"/>
-<circle cx="170.0" cy="150.0" r="5" fill="#ffffff" stroke="#1f5fbf" stroke-width="2.5"/>
-<circle cx="290.0" cy="150.0" r="5" fill="#ffffff" stroke="#1f5fbf" stroke-width="2.5"/>
-<circle cx="410.0" cy="150.0" r="5" fill="#ffffff" stroke="#1f5fbf" stroke-width="2.5"/>
-<circle cx="50.0" cy="330.0" r="5" fill="#1f5fbf"/>
-<circle cx="170.0" cy="330.0" r="5" fill="#1f5fbf"/>
-<circle cx="290.0" cy="330.0" r="5" fill="#1f5fbf"/>
-<text x="230.0" y="408" text-anchor="middle" font-size="14" fill="#222222">x mod 1. The image snaps across the field.</text>
-<text x="170.0" y="445" text-anchor="end" font-size="13" font-weight="bold" fill="#666666">input</text>
-<text x="290.0" y="445" text-anchor="start" font-size="13" font-weight="bold" fill="#666666">output</text>
-<line x1="110.0" y1="453" x2="350.0" y2="453" stroke="#666666"/>
-<text x="170.0" y="477" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">-0.5</text>
-<text x="230.0" y="477" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="477" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#1f5fbf">0.50</text>
-<text x="170.0" y="501" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">-0.2</text>
-<text x="230.0" y="501" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="501" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#1f5fbf">0.80</text>
-<text x="170.0" y="525" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">+0.3</text>
-<text x="230.0" y="525" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="525" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace"  fill="#222222">0.30</text>
-<text x="170.0" y="549" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">+0.8</text>
-<text x="230.0" y="549" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="549" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace"  fill="#222222">0.80</text>
-<text x="170.0" y="573" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">+1.2</text>
-<text x="230.0" y="573" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="573" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#1f5fbf">0.20</text>
-<text x="170.0" y="597" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#222222">+1.5</text>
-<text x="230.0" y="597" text-anchor="middle" font-size="14" fill="#666666">→</text>
-<text x="290.0" y="597" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#1f5fbf">0.50</text>
+<text x="145" y="121" text-anchor="middle" font-size="16" font-weight="bold" fill="#e6edf3">DOWN · WRAP</text>
+<rect x="170.0" y="150" width="120.0" height="180" fill="#1c2430"/>
+<text x="230.0" y="164" text-anchor="middle" font-size="12" fill="#9aa4b2">in range</text>
+<line x1="50" y1="330" x2="410" y2="330" stroke="#9aa4b2" stroke-width="1.5"/>
+<line x1="50" y1="150" x2="50" y2="330" stroke="#9aa4b2" stroke-width="1.5"/>
+<line x1="50.0" y1="330" x2="50.0" y2="335" stroke="#9aa4b2"/>
+<text x="50.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">-1</text>
+<line x1="110.0" y1="330" x2="110.0" y2="335" stroke="#9aa4b2"/>
+<text x="110.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">-0.5</text>
+<line x1="170.0" y1="330" x2="170.0" y2="335" stroke="#9aa4b2"/>
+<text x="170.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">0</text>
+<line x1="230.0" y1="330" x2="230.0" y2="335" stroke="#9aa4b2"/>
+<text x="230.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">0.5</text>
+<line x1="290.0" y1="330" x2="290.0" y2="335" stroke="#9aa4b2"/>
+<text x="290.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">1</text>
+<line x1="350.0" y1="330" x2="350.0" y2="335" stroke="#9aa4b2"/>
+<text x="350.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">1.5</text>
+<line x1="410.0" y1="330" x2="410.0" y2="335" stroke="#9aa4b2"/>
+<text x="410.0" y="350" text-anchor="middle" font-size="12" fill="#9aa4b2">2</text>
+<line x1="45" y1="330.0" x2="50" y2="330.0" stroke="#9aa4b2"/>
+<text x="41" y="334.0" text-anchor="end" font-size="12" fill="#9aa4b2">0</text>
+<line x1="45" y1="240.0" x2="50" y2="240.0" stroke="#9aa4b2"/>
+<text x="41" y="244.0" text-anchor="end" font-size="12" fill="#9aa4b2">0.5</text>
+<line x1="45" y1="150.0" x2="50" y2="150.0" stroke="#9aa4b2"/>
+<text x="41" y="154.0" text-anchor="end" font-size="12" fill="#9aa4b2">1</text>
+<text x="230.0" y="372" text-anchor="middle" font-size="13" fill="#e6edf3">input position (pos_raw)</text>
+<text transform="translate(18,240.0) rotate(-90)" text-anchor="middle" font-size="13" fill="#e6edf3">output position</text>
+<line x1="50.0" y1="330.0" x2="170.0" y2="150.0" stroke="#5aa9ff" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<line x1="170.0" y1="330.0" x2="290.0" y2="150.0" stroke="#5aa9ff" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<line x1="290.0" y1="330.0" x2="410.0" y2="150.0" stroke="#5aa9ff" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+<line x1="170.0" y1="150" x2="170.0" y2="330" stroke="#9aa4b2" stroke-dasharray="4 4"/>
+<line x1="290.0" y1="150" x2="290.0" y2="330" stroke="#9aa4b2" stroke-dasharray="4 4"/>
+<circle cx="170.0" cy="150.0" r="5" fill="#0d1117" stroke="#5aa9ff" stroke-width="2.5"/>
+<circle cx="290.0" cy="150.0" r="5" fill="#0d1117" stroke="#5aa9ff" stroke-width="2.5"/>
+<circle cx="410.0" cy="150.0" r="5" fill="#0d1117" stroke="#5aa9ff" stroke-width="2.5"/>
+<circle cx="50.0" cy="330.0" r="5" fill="#5aa9ff"/>
+<circle cx="170.0" cy="330.0" r="5" fill="#5aa9ff"/>
+<circle cx="290.0" cy="330.0" r="5" fill="#5aa9ff"/>
+<text x="230.0" y="408" text-anchor="middle" font-size="14" fill="#e6edf3">x mod 1. The image snaps across the field.</text>
+<text x="170.0" y="445" text-anchor="end" font-size="13" font-weight="bold" fill="#9aa4b2">input</text>
+<text x="290.0" y="445" text-anchor="start" font-size="13" font-weight="bold" fill="#9aa4b2">output</text>
+<line x1="110.0" y1="453" x2="350.0" y2="453" stroke="#9aa4b2"/>
+<text x="170.0" y="477" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">-0.5</text>
+<text x="230.0" y="477" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="477" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#5aa9ff">0.50</text>
+<text x="170.0" y="501" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">-0.2</text>
+<text x="230.0" y="501" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="501" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#5aa9ff">0.80</text>
+<text x="170.0" y="525" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">+0.3</text>
+<text x="230.0" y="525" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="525" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace"  fill="#e6edf3">0.30</text>
+<text x="170.0" y="549" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">+0.8</text>
+<text x="230.0" y="549" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="549" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace"  fill="#e6edf3">0.80</text>
+<text x="170.0" y="573" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">+1.2</text>
+<text x="230.0" y="573" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="573" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#5aa9ff">0.20</text>
+<text x="170.0" y="597" text-anchor="end" font-size="14" font-family="Menlo, Consolas, monospace" fill="#e6edf3">+1.5</text>
+<text x="230.0" y="597" text-anchor="middle" font-size="14" fill="#9aa4b2">→</text>
+<text x="290.0" y="597" text-anchor="start" font-size="14" font-family="Menlo, Consolas, monospace" font-weight="bold" fill="#5aa9ff">0.50</text>
 </g>
 </svg>
