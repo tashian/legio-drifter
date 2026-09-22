@@ -1,4 +1,4 @@
-# CLAUDE.md — drifter
+# AGENTS.md — drifter
 
 Random Bézier auto-panner / crossfader / CV panner for the Noise Engineering Legio
 (Daisy Patch SM, STM32H750). One switch picks what the module is (PAN / XFADE / CV),
@@ -37,14 +37,14 @@ make -C test           # host DSP tests (no hardware)
 make program-dfu       # flash (module must be in DFU mode first)
 ```
 
-DFU entry, `Error 74`, and `screen`/`cat` port contention: see `../CLAUDE.md`. Telemetry at 5 Hz:
+DFU entry, `Error 74`, and `screen`/`cat` port contention: see `../AGENTS.md`. Telemetry at 5 Hz:
 `mode=PAN pos=0.42 ctr=0.50 dep=0.30 T=12.0s ext=0 curve=+0.35 edge=FOLD cv_norm=0.3021 cv=0.000V src=jack`
 (appends ` [curve edit]` while curve-edit mode is active)
 
 ## Hardware quirks
 
 The shared Legio lessons (3 ADC channels, inverted Switch3 polarity, `-u _printf_float`, no
-`PrintLine` in the audio callback) are in `../CLAUDE.md`. Specific to this app:
+`PrintLine` in the audio callback) are in `../AGENTS.md`. Specific to this app:
 
 - **Audio inputs are AC coupled**, outputs are DC coupled (±5 V). CV mode writes DC to the
   outputs on purpose. In R is normalled to In L in hardware.
