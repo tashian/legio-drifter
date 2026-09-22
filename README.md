@@ -1,6 +1,12 @@
-# Drifter
+# legio-drifter
 
-Random Bézier auto-panner / crossfader / CV panner firmware for the Noise Engineering Legio.
+Random Bézier auto-panner / crossfader / CV panner firmware for the Noise Engineering Legio Eurorack module.
+
+Part of a family of alternative firmwares for the [Noise Engineering Legio](https://noiseengineering.us/) platform (Daisy Patch SM, STM32H750):
+[legio-sawstack](https://github.com/tashian/legio-sawstack) (supersaw oscillator) ·
+[legio-stutterer](https://github.com/tashian/legio-stutterer) (stutter → tape delay → DJ filter) ·
+[legio-drifter](https://github.com/tashian/legio-drifter) (random Bézier panner / crossfader / CV).
+Flash any of them onto a Legio via DFU; the stock firmware can be restored from Noise Engineering's customer portal.
 
 - **Left switch:** PAN (up) / XFADE (center) / CV (down).
 - **Right switch:** edge behavior when the image is pushed past the rails: CLIP / FOLD / WRAP.
