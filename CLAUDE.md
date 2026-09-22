@@ -37,25 +37,18 @@ make -C test           # host DSP tests (no hardware)
 make program-dfu       # flash (module must be in DFU mode first)
 ```
 
-DFU entry on Legio: BOOT + RESET on the Patch SM submodule (back of the module). The user
-can't always do this without disturbing the patch — be patient at flash gates. dfu-util's
-`Error 74` / "Error during download get_status" after flashing is harmless; the module may
-need a reseat before `/dev/cu.usbmodem*` reappears.
-
-Live serial: `screen /dev/cu.usbmodem* 115200`. If `screen` is attached elsewhere, `cat`
-can't open the port — check `screen -ls`. Telemetry at 5 Hz:
+DFU entry, `Error 74`, and `screen`/`cat` port contention: see `../CLAUDE.md`. Telemetry at 5 Hz:
 `mode=PAN pos=0.42 ctr=0.50 dep=0.30 T=12.0s ext=0 curve=+0.35 edge=FOLD cv_norm=0.3021 cv=0.000V src=jack`
 (appends ` [curve edit]` while curve-edit mode is active)
 
-## Hardware quirks (workspace lessons — see ../CLAUDE.md for the full list)
+## Hardware quirks
 
-1. **3 ADC channels.** Top/bottom knobs each read knob + CV jack summed. Treated as a feature.
-2. **Switch3.Read() polarity is inverted.** lib `1` = panel DOWN, lib `2` = panel UP. Inverted
-   in `main.cpp`. Don't "fix" it.
-3. **`-u _printf_float`** is in the Makefile. Remove it and float telemetry goes silent.
-4. **Audio inputs are AC coupled**, outputs are DC coupled (±5 V). CV mode writes DC to the
-   outputs on purpose. In R is normalled to In L in hardware.
-5. **Never `PrintLine` in the audio callback.** Telemetry goes through `ui_state`.
+The shared Legio lessons (3 ADC channels, inverted Switch3 polarity, `-u _printf_float`, no
+`PrintLine` in the audio callback) are in `../CLAUDE.md`. Specific to this app:
+
+- **Audio inputs are AC coupled**, outputs are DC coupled (±5 V). CV mode writes DC to the
+  outputs on purpose. In R is normalled to In L in hardware.
+- Switch3 inversion happens in `main.cpp`. Don't "fix" it.
 
 ## Behavior notes
 
@@ -72,7 +65,6 @@ can't open the port — check `screen -ls`. Telemetry at 5 Hz:
 - Clock accepts periods from 0.05 s to **20 s** (stutterer's copy caps at 5 s); while
   acquiring, a lone first edge is kept for up to 20 s so slow ambient clocks can lock; once
   locked, free-run resumes after max(4 periods, 2 s) of silence.
-- Telemetry appends ` [curve edit]` while curve-edit mode is active.
 - LEDs: blue = computed position (left = 1 − pos, right = pos); yellow flash on the left
   = new random target; yellow flash on the right = incoming clock edge; curve-edit mode
   shows curve in yellow only; internal CV source adds a yellow floor that scales with the
